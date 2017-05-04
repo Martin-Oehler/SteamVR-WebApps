@@ -26,7 +26,7 @@ namespace SteamVR_Spotify
             overlay.DashboardOverlay.SetThumbnail("Resources/spotify-logo-small.png");
             overlay.BrowserPreInit += Overlay_BrowserPreInit;
             overlay.BrowserReady += Overlay_BrowserReady;
-            overlay.PageReady += Overlay_PageReady;
+            //overlay.PageReady += Overlay_PageReady;
             overlay.StartBrowser();
 
             EventHandler<CefSharp.LoadingStateChangedEventArgs> handler = PageReady;
@@ -59,38 +59,26 @@ namespace SteamVR_Spotify
         {
             if (!args.IsLoading)
             {
-                Console.WriteLine("Ready again!");
-            }
-            
-        }
+                string script = 
+                    @"var user = '" + Properties.Settings.Default.user + "'\n" +
+                    "var pwd = '" + Properties.Settings.Default.password + "'\n" +
+                    @"account_link = document.getElementById('has-account')
+                    if (account_link) {
+                        account_link.click()
 
-        private static void Overlay_PageReady(object sender, EventArgs e)
-        {
-            string script = @"(function() {
-                    // Load the script
-                    var script = document.createElement('SCRIPT');
-                    script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
-                    script.type = 'text/javascript';
-                    script.onload = function() {
-                        var $ = window.jQuery;
-
-                        var user = '" + Properties.Settings.Default.user + "'\n" +
-                        "var pwd = '" + Properties.Settings.Default.password + "'\n" +
-                        @"account_link = $('a#has-account')[0]
-                        if (account_link)
+                        login_user = document.getElementById('login-usr')
+                        if (login_user)
                         {
-                            account_link.click()
+                            login_user.value = user
+                            document.getElementById('login-pass').value = pwd
+                        }
+                    } else {
+                        var last_artist = ''
+                        var last_name = ''
 
-                            login_user = $('input#login-usr')
-                            if (login_user[0])
-                            {
-                                login_user.val(user)
-                                $('input#login-pass').val(pwd)
-                            }
-                        } 
-                        /*function track_notification( )
+                        function track_notification( )
                         {
-                            /*var artist_dom = $('.track-info__artists')
+                            var artist_dom = document.getElementsByClassName('track-info__artists')[0]
                             var artist = 'Unknown'
                             if (artist_dom) {
                                 artist = artist_dom.firstChild.firstChild.firstChild.textContent
@@ -98,24 +86,31 @@ namespace SteamVR_Spotify
                                 return
                             }
 
-                            var name_dom = $('.track-info__name')
+                            var name_dom = document.getElementsByClassName('track-info__name')[0]
                             var name = 'Unknown'
                             if (name_dom) {
                                 name = name_dom.firstChild.firstChild.firstChild.textContent
                             } else {
                                 return
-                            }*/
-
-                            //notifications.sendNotification('Now playing: ' + artist + ' - ' + name)
-                            notifications.sendNotification('Now playing: test')
+                            }
+                            if (last_artist !== artist || last_name !== name) {
+                                notifications.sendNotification('Now playing: ' + artist + ' - ' + name)
+                                last_artist = artist
+                                last_name = name
+                            }
                         }
 
-                        setInterval(track_notification, 2000);*/
-                    };
-                    document.getElementsByTagName('head')[0].appendChild(script);
-                })();";
-            //Console.WriteLine(script);
-            overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
+                        setInterval(track_notification, 2000);
+                    }";
+                //Console.WriteLine(script);
+                overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
+            }
+            
+        }
+
+        private static void Overlay_PageReady(object sender, EventArgs e)
+        {
+
         }
     }
 }
