@@ -6,7 +6,7 @@
       <Value Profile="(Default)">[EDIT CONFIG!]</Value>
     </Setting>
     <Setting Name="password" Type="System.String" Scope="User">
-      <Value Profile="(Default)"> </Value>
+      <Value Profile="(Default)">[EDIT CONFIG!]</Value>
     </Setting>
   </Settings>
 </SettingsFile>

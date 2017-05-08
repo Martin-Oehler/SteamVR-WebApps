@@ -1,0 +1,16 @@
+{
+	"source" : "builtin",
+	"applications": [{
+		"app_key": "Martin-Oehler.SteamVR-Spotify",
+		"launch_type": "binary",
+		"binary_path_windows": "SteamVR-Spotify.exe",
+		"is_dashboard_overlay": true,
+
+		"strings": {
+			"en_us": {
+				"name": "SteamVR Spotify",
+				"description": "Dashboard app to access Spotify."
+			}
+		}
+	}]
+}
