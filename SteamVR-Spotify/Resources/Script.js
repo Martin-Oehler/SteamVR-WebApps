@@ -1,6 +1,11 @@
 var user = '[USER]'
 var pwd = '[PWD]'
 
+var dialog_dom = document.getElementsByClassName("dialog")[0]
+if (dialog_dom) {
+    dialog_dom.outerHTML = ""
+}
+
 account_link = document.getElementById('has-account')
 if (account_link) {
     account_link.click()
