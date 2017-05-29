@@ -17,9 +17,6 @@ if (account_link) {
         document.getElementById('login-pass').value = pwd
     }
 } else {
-    var last_artist = ''
-    var last_name = ''
-
     function track_notification( )
     {
         var artist_dom = document.getElementsByClassName('track-info__artists')[0]
@@ -37,10 +34,10 @@ if (account_link) {
         } else {
             return
         }
-        if (last_artist !== artist || last_name !== name) {
+        if (current_artist !== artist || current_song !== name) {
             notifications.sendNotification('Now playing: ' + artist + ' - ' + name)
-            last_artist = artist
-            last_name = name
+            current_artist = artist
+            current_song = name
         }
     }
 

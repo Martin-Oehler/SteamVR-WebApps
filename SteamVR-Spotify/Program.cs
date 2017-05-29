@@ -14,11 +14,16 @@ namespace SteamVR_Spotify
     {
         static WebKitOverlay overlay;
 
+        static string current_artist;
+        static string current_song;
+
         static void Main(string[] args)
         {
             SteamVR_WebKit.SteamVR_WebKit.Init(new CefSharp.CefSettings() { PersistSessionCookies = true, CachePath = "chrome-cache" });
             SteamVR_WebKit.SteamVR_WebKit.FPS = 30;
 
+            current_artist = "";
+            current_song = "";
             //SteamVR_WebKit.JsInterop.Notifications.RegisterIcon("default", new Bitmap(Environment.CurrentDirectory + "\\Resources\\spotify-logo-small.png")); -- leads to exception
 
             overlay = new WebKitOverlay(new Uri("https://open.spotify.com"), 1024, 1024, "spotify", "Spotify", OverlayType.Dashboard);
@@ -37,7 +42,10 @@ namespace SteamVR_Spotify
 
             SteamVR_Application application = new SteamVR_Application();
             application.InstallManifest(true);
-            //application.RemoveManifest();
+            if (args.Length > 0 && args[0] == "--debug")
+            {
+                application.RemoveManifest();
+            }
 
             SteamVR_WebKit.SteamVR_WebKit.RunOverlays(); // Runs update/draw calls for all active overlays. And yes, it's blocking.
         }
@@ -59,6 +67,8 @@ namespace SteamVR_Spotify
 
             overlay.Browser.ConsoleMessage += Browser_ConsoleMessage;
             overlay.Browser.RegisterJsObject("notifications", new SteamVR_WebKit.JsInterop.Notifications(overlay.DashboardOverlay));
+            overlay.Browser.RegisterJsObject("current_artist", current_artist);
+            overlay.Browser.RegisterJsObject("current_song", current_song);
         }
 
         private static void PageReady(object sender, CefSharp.LoadingStateChangedEventArgs args)
@@ -71,7 +81,6 @@ namespace SteamVR_Spotify
                 //Console.WriteLine(script);
                 overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
             }
-            
         }
     }
 }
