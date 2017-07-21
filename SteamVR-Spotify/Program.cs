@@ -17,10 +17,14 @@ namespace SteamVR_Spotify
         static string current_artist;
         static string current_song;
 
+        static string script;
+
         static void Main(string[] args)
         {
             SteamVR_WebKit.SteamVR_WebKit.Init(new CefSharp.CefSettings() { PersistSessionCookies = true, CachePath = "chrome-cache" });
             SteamVR_WebKit.SteamVR_WebKit.FPS = 30;
+
+            script = File.ReadAllText("Resources/Script.js");
 
             current_artist = "";
             current_song = "";
@@ -75,10 +79,8 @@ namespace SteamVR_Spotify
         {
             if (!args.IsLoading)
             {
-                string script = File.ReadAllText("Resources/Script.js");
                 script = script.Replace("[USER]", Properties.Settings.Default.user);
                 script = script.Replace("[PWD]", Properties.Settings.Default.password);
-                //Console.WriteLine(script);
                 overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
             }
         }
