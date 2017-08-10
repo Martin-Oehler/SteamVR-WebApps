@@ -3,10 +3,49 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>SteamVR-WhatsApp Login</title>
+    <style>
+        #background-top { 
+            background-color: #009688; 
+            height: 150px
+        }
+        body { 
+            background-color: #dfdfdf;
+            margin: 0
+        }
+        #window {
+            display: flex;
+            //width: 1000px;
+            background-color: white;
+            border-radius: 3px;
+            padding: 30px;
+            position: absolute;
+            z-index: 2;
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+        #qrcode {
+            //width: 300px;
+            padding-right: 50px;
+        }
+        #caption {
+            width: 300px;    
+        //flex-grow: 1;
+        }
+
+    </style>
 </head>
 <body>
-    <div id="caption">Scan this!</div>
-    <div id="qrcode"></div>
+    <div id="background-top"></div>
+    <div id="window">
+        <div id="qrcode">
+            <img alt="Scan me!" src="data:image/png;base64,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">
+        </div>
+        <div id="caption">        
+            <h1>SteamVR-WhatsApp Login</h1>
+            <span><b>Scan</b> this code with WhatsApp on your smartphone. After scanning you can close this window.</span>
+        </div>
+    </div>
 </body>
 </html>

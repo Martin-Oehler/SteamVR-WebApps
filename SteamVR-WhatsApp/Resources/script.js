@@ -1,10 +1,10 @@
-﻿var a;
+﻿var login_page_html = ""
 
-function onPageLoaded(login_page_path) {   
+function onPageLoaded() {
     if (checkLoginPage()) {
         console.log("we are not logged in");
         // we are not logged in 
-        openLoginPopup(login_page_path); // TODO: somehow close it again!
+        openLoginPopup(); // TODO: somehow close it again!
         
     } else {
         console.log("we are logged in");
@@ -29,23 +29,20 @@ function getQrCodeString() {
 }
 
 // open new popup so user can scan on PC
-function openLoginPopup(page_path) {
+function openLoginPopup() {
     var qrstring = getQrCodeString();
     if (qrstring != "") {
         console.log("opening popup");
-        console.log(page_path)
-        var win = window.open(page_path, "WhatsApp Login", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, width=350, height=300");
-        console.log(win.document.body)
+        var win = window.open("", "WhatsApp Login", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, width=1200, height=600");
+        win.document.body.innerHTML = login_page_html;
         qrcode_div = win.document.getElementById("qrcode");
         qrcode_div.innerHTML = "<img src='" + qrstring + "' style='display:block;'>"
-        //console.log(win.document.body);
     } else {
         setTimeout(function () {
             console.log("didn't find qrcode, trying again in 1s..");
-            openLoginPopup(page_path)
+            openLoginPopup()
         }, 1000);
     }
-
 }
 
 // check for new messages

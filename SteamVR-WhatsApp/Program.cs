@@ -16,6 +16,7 @@ namespace SteamVR_WhatsApp
         static WebKitOverlay overlay;
 
         static string script;
+        static string popup_html;
 
         static void Main(string[] args)
         {
@@ -23,6 +24,7 @@ namespace SteamVR_WhatsApp
             SteamVR_WebKit.SteamVR_WebKit.FPS = 30;
 
             script = File.ReadAllText("Resources/Script.js");
+            popup_html = File.ReadAllText("Resources/login_page.html");
 
             //SteamVR_WebKit.JsInterop.Notifications.RegisterIcon("default", new Bitmap(Environment.CurrentDirectory + "\\Resources\\spotify-logo-small.png")); //-- leads to exception
 
@@ -74,15 +76,9 @@ namespace SteamVR_WhatsApp
             if (!args.IsLoading)
             {
                 overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync(script);
-                Uri uri = new Uri(Environment.CurrentDirectory + "/Resources/login_page.html");
-                string login_page_path = "file:///" + uri.AbsolutePath;
-                //string escapedFilepath = login_page_path.Replace("\\", "\\\\");
-                Console.WriteLine("Login page path: " + login_page_path);
-                //Thread.Sleep(5000);
-                overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("onPageLoaded('" + login_page_path + "')");
-                //overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("onPageLoaded('text.html');");
-                //overlay.TryExecAsyncJS(script);
-                //overlay.TryExecAsyncJS("onPageLoaded('file://" + Environment.CurrentDirectory + "/Resources/login_page.html')");
+                overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("login_page_html = `" + popup_html + "`;");
+                overlay.Browser.GetBrowser().MainFrame.ExecuteJavaScriptAsync("onPageLoaded();");
+
             }
         }
     }
